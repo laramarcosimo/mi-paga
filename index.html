@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co https://open.er-api.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mi paga">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f7f7f5">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAESklEQVR4nO3d220UQRRF0TIiDxOYiQFCIQcSIxQ+ShqNwGemp1/3nNt7fSO5umr37Xkg++39x8cAPvOlegHwRRyQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IH2tXkCZP79+L//H335+P24ltt6u80tqX6rhsYu00j+OHZv4X+9K2sZxaBP/a1lJwzhOzuJes0RaxVGYxb02iTSJwySLew0SiY/DMIt70YlkfwhmXsZIWOEDqZMjbtMTR0hkHHuVsfDATv5xPvLi2HhUG0+o9qefLCmO1Qdz0JG4rWd3MXGsO4kTjsF2YdtlxLHiAE7eff8VrhAQx6v7XrjpQUtdwj2OxP91kbjmT1l/CBa6yy+txPkDG+s4lvMpY3Jbzzq+j5WFt5T5MURfhenkiN7Teyd/CLsvxzjalDHl9uEYxxIpZUxZq72xi2PJDZS410vW7DY8vOLoWsYU14dXHLBiFEfvsTFlDQ+jOJ5KL2MKugqXOJ7eLkF7+tTTazEZHi5xwJBFHJcaG1PE8LCIA57q47jg2Jj8h0d9HLDlHkfXsTGZX11xHOWT01zt/lhPDvMbaxfO12gdB2pVxsEzZYnCXWJyQPKNw/lhvC/bK/WNA+V8f4Nx4isS2xmwTtnkSDz7KlV7xWPFgufIIQ5IxAGJOCARByTigEQckIgDEnFAIg5IxAGJOCARByTfr+w9v4s6iOd31GWT41Jnv1HVXvFYgUQckHzj8HwMH8H2Sn3jQLnKOHhNukThLvm+lR3G81ZpljuPlWLON0BxHM1utd3V7g+To5Lz2BjEgQfq47jsk8X/N+XVxwFbFnGU3yLn8x8bwyQOeHKJw+FGOU3E2Bg+cVyH+dvXe0ZxmNwuh8r6g0NGccCNVxw+N80RssbGcItjmO3OjuLKGOZf2T/mtpUPBL0IvWc3OUby3/f+VO5fX3eMYzTqI7eMMcbb+4+P6jVIy8/ecHOjFz+ZTo5XuY0Qt/WsYx3HS7eUz3m8tBLbsTHMHyvTq6deuN1BS10iII6xaiqcvO/+K1whI46x9qlxwgHYLmy7mDjGhlcVB52E23p2lxTHtPGF58aDqf3pJ8uLY+z3xuTkj9qyyhihcQynN64LxZUxcuOYIhJJzGKy/hDsKf9991/hA9mT48ZwhERnMTWJYzJJpEEWU6s4psJE2mQxNYxjOjmRZllMbeO4ObSSlk3c9I/jZsdKejdxc6E4/tHmf10c57px4KnsD8FwKOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkh/AZHoTpBX+bkFAAAAAElFTkSuQmCC">
+<title>Mi paga</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main>
+<header>
+<div style="display:flex;align-items:center;gap:8px"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--acc)"/><circle cx="16" cy="16" r="8" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M12 14h6M12 18h6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><strong id="ttl" style="font-size:20px">Mi paga</strong><span id="hw"></span></div>
+<div id="hr0" style="display:flex;align-items:center;gap:2px;margin-left:auto"><div id="hs" class="hsr" hidden><input id="hsq" class="srch" type="search" autocomplete="off" autocorrect="off" enterkeyhint="search" oninput="srIn(this.value)"><button class="x" onclick="srClose()" aria-label="Cerrar búsqueda"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div id="hn" style="display:flex;align-items:center;gap:2px"></div><button id="srb" class="x edb" onclick="srOpen()" aria-label="Buscar" title="Buscar" hidden><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button><button id="edb" class="x edb" onclick="edT()" aria-label="Editar esta pantalla" title="Editar esta pantalla" hidden><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></div>
+</header>
+<nav id="nav"></nav>
+<div id="app"></div>
+</main>
+<button id="fab" class="fab" onclick="fab()" aria-label="Apuntar un gasto"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg></button>
+<div id="ts" class="ts" hidden></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
