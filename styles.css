@@ -2208,3 +2208,35 @@ th,td {
     animation:none!important
   }
 }
+
+.upd {
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:calc(76px + env(safe-area-inset-bottom));
+  z-index:60;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--acc);
+  color:#fff;
+  padding:10px 12px;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.25);
+  font-weight:600;
+  font-size:14px
+}
+.upd span {
+  flex:1;
+  min-width:0
+}
+.upd .chip {
+  background:#fff;
+  color:var(--acc);
+  border-color:#fff;
+  flex:none
+}
+.upd .x {
+  color:#fff;
+  flex:none
+}
