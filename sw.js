@@ -1,6 +1,6 @@
 // Mi paga: permite abrir la app sin internet.
 // Guarda una copia de la app en el móvil; con conexión siempre intenta cargar la versión nueva.
-const V = 'mipaga-v5';
+const V = 'mipaga-v6';
 const APP = './index.html';
 
 self.addEventListener('install', e => {
