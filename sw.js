@@ -1,10 +1,10 @@
 // Mi paga: permite abrir la app sin internet.
 // Guarda una copia de la app en el móvil; con conexión siempre intenta cargar la versión nueva.
-const V = 'mipaga-v10';
+const V = 'mipaga-v11';
 const APP = './index.html';
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(V).then(c => c.addAll(['./', APP, './styles.css', './app.js'])).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(V).then(c => c.addAll(['./', APP, './styles.css', './app.js'].map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -27,7 +27,7 @@ self.addEventListener('fetch', e => {
       const c = await caches.open(V);
       try {
         const net = await Promise.race([
-          fetch(r),
+          fetch(r, { cache: 'no-cache' }),
           new Promise((_, no) => setTimeout(() => no(new Error('lento')), 4000))
         ]);
         if (net && net.ok) c.put(key, net.clone());
