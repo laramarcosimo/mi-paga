@@ -139,7 +139,8 @@ const CATS = EC.concat("Bizum"), bzX = () => (S.bz || []).filter((x) => x.t != "
   });
   return S.tx.map((t) => t.sh != null ? Object.assign({}, t, { a: t.sh, full: t.a }) : lk[t.id] && t.k == "g" && !t.r ? Object.assign({}, t, { a: rnd(Math.max(0, t.a - lk[t.id])), full: t.a }) : t).concat(bzX()).filter((t) => !sepMode() || (t.src || "p") == UI().view);
 };
-const ext = (m) => rnd(sum(ALL().filter((t) => t.k == "i" && t.d.startsWith(m)), (t) => t.a) + spM(m).x + sum(ALL().filter((t) => t.k == "g" && t.r && t.dv && t.dv.startsWith(m)), (t) => t.a)), inc = (m) => {
+// Mes al que cuenta lo que te devuelven: el mes en que lo gastaste (aunque te lo devuelvan después). Si ese mes es anterior a empezar a ahorrar, el mes en que lo recibes.
+const rMes = (t) => t.d.slice(0, 7) >= first() ? t.d.slice(0, 7) : t.dv.slice(0, 7), ext = (m) => rnd(sum(ALL().filter((t) => t.k == "i" && t.d.startsWith(m)), (t) => t.a) + spM(m).x + sum(ALL().filter((t) => t.k == "g" && t.r && t.dv && rMes(t) == m), (t) => t.a)), inc = (m) => {
   if (m < first()) return 0;
   const u = UI(), sal = u.both ? S.sal || 0 : 0;
   return u.both && !u.uni ? u.view == "s" ? sal + ext(m) + pxt(m) : (S.paga || 0) + ext(m) : (S.paga || 0) + sal + ext(m) + pxt(m);
@@ -1777,8 +1778,8 @@ function mHero(m) {
   if (m < first()) return `<div class="card"><p class="mut" style="margin:0">Todavía no usabas la app en ${(new Date(m + "-01T12:00")).toLocaleDateString("es-ES", { month: "long" })}, así que este mes no cuenta ni la paga ni el ahorro.</p></div>`;
   const i = inc(m), g = exp(m), sv = S.meta || 0, bud = rnd(i - sv), left = rnd(bud - g), mn = (new Date(m + "-01T12:00")).toLocaleDateString("es-ES", { month: "long" });
   if (!i) return `<div class="card"><div class="k">Gastado en ${mn}</div><div class="big neg">${f(-g)}</div><div class="tip hint">Indica tu ${W("sueldo", "paga")} en Ajustes para ver cuánto te queda.</div></div>`;
-  const pn = m == mo ? pend() : 0, real = rnd(left + pn), warn = pn > 0 && real < 0 ? "<div>\u26A0 Aunque te devuelvan lo pendiente, te pasas " + f0(-real) + ".</div>" : pn > 0 && left < 0 ? "<div>Ahora estás pasado, pero cuando te devuelvan lo pendiente te quedarán " + f0(real) + ".</div>" : "";
-  return hero({ lab: (left < 0 ? "Te has pasado en " : "Te queda en ") + mn, left, show: Math.abs(left), spent: g, bud, tiles: [["Gastado", f(g)]].concat(pn > 0 ? [["Por devolver", f(pn)], ["Realmente", real < 0 ? `<span style="color:var(--red)">${f(real)}</span>` : f(real)]] : [], sv ? [["Puedes gastar", f(bud)]] : []), msg: (sv ? "<div>Tu " + W("sueldo", "paga") + " " + f0(i) + " − " + f0(sv) + " para ahorrar = <b>" + f0(bud) + "</b> para gastar.</div>" : "") + warn });
+  const pn = m == mo ? pendM(m) : 0, old = m == mo ? rnd(pend() - pn) : 0, real = rnd(left + pn), warn = pn > 0 && real < 0 ? "<div>\u26A0 Aunque te devuelvan lo pendiente, te pasas " + f0(-real) + ".</div>" : pn > 0 && left < 0 ? "<div>Ahora estás pasado, pero cuando te devuelvan lo pendiente te quedarán " + f0(real) + ".</div>" : "";
+  return hero({ lab: (left < 0 ? "Te has pasado en " : "Te queda en ") + mn, left, show: Math.abs(left), spent: g, bud, tiles: [["Gastado", f(g)]].concat(pn > 0 ? [["Por devolver", f(pn)], ["Realmente", real < 0 ? `<span style="color:var(--red)">${f(real)}</span>` : f(real)]] : [], sv ? [["Puedes gastar", f(bud)]] : []), msg: (sv ? "<div>Tu " + W("sueldo", "paga") + " " + f0(i) + " − " + f0(sv) + " para ahorrar = <b>" + f0(bud) + "</b> para gastar.</div>" : "") + (old > 0 ? "<div>Además te deben " + f0(old) + " de meses anteriores: cuando te lo devuelvan, sube el ahorro de esos meses.</div>" : "") + warn });
 }
 // Lo que te queda por que te devuelvan de los gastos de un mes
 const pendM = (m) => sum(ALL().filter((t) => t.k == "g" && t.r && !t.dv && t.d.startsWith(m)), (t) => t.a);
@@ -1787,7 +1788,7 @@ function resMes(m) {
   if (m < first()) return "";
   const i = inc(m), g = exp(m), pn = pendM(m), gr = rnd(g - pn), sv = rnd(i - g), svr = rnd(sv + pn), cl = (v) => v < 0 ? "neg" : "pos";
   const row = (a, b, st) => `<div class="m" style="justify-content:space-between;gap:8px${st || ""}"><span>${a}</span><b>${b}</b></div>`;
-  return `<div class="card"><h2>Resumen del mes</h2>${row(W("Sueldo", "Paga") + " y extras", f(i))}${row("Gastado", f(-g))}${pn > 0 ? row("Te lo devolverán (aún pendiente)", "+" + f(pn)) : ""}${row("<b>Gasto real</b>", `<span class="neg">${f(-gr)}</span>`, ";border-top:1px solid var(--line);padding-top:6px;margin-top:6px")}${row("<b>Ahorrado ahora</b>", `<span class="${cl(sv)}">${f(sv)}</span>`, ";margin-top:6px")}${pn > 0 ? row("<b>Ahorrado cuando te devuelvan</b>", `<span class="${cl(svr)}">${f(svr)}</span>`) : ""}<p class="mut hint" style="font-size:13px;margin-top:8px">Gasto real = gastado − lo que te van a devolver. Ahorrado = ${W("sueldo", "paga")} y extras − gastado.${pn > 0 ? " Cuando te devuelvan lo pendiente, ese dinero entra como ingreso y tu ahorro sube." : ""}</p></div>`;
+  return `<div class="card"><h2>Resumen del mes</h2>${row(W("Sueldo", "Paga") + " y extras", f(i))}${row("Gastado", f(-g))}${pn > 0 ? row("Te lo devolverán (aún pendiente)", "+" + f(pn)) : ""}${row("<b>Gasto real</b>", `<span class="neg">${f(-gr)}</span>`, ";border-top:1px solid var(--line);padding-top:6px;margin-top:6px")}${row("<b>Ahorrado ahora</b>", `<span class="${cl(sv)}">${f(sv)}</span>`, ";margin-top:6px")}${pn > 0 ? row("<b>Ahorrado cuando te devuelvan</b>", `<span class="${cl(svr)}">${f(svr)}</span>`) : ""}<p class="mut hint" style="font-size:13px;margin-top:8px">Gasto real = gastado − lo que te van a devolver. Ahorrado = ${W("sueldo", "paga")} y extras − gastado.${pn > 0 ? " Cuando te devuelvan lo pendiente, tu ahorro de este mes sube, aunque te lo devuelvan en otro mes." : ""}</p></div>`;
 }
 function perCard(title, from, to, extra) {
   const l = ALL().filter((t) => t.d >= from && t.d <= to), sp = spend(l), g = sp.g, bz = bzV().filter((x) => x.t != "deb" && x.d >= from && x.d <= to), be = sum(bz.filter((x) => x.t == "env"), (x) => x.a), br = sum(bz.filter((x) => x.t == "rec" && !x.cp), (x) => x.a), xe = rnd(sum(l.filter((t) => t.k == "i" && !t.bz), (t) => t.a));
@@ -1939,6 +1940,8 @@ function rd() {
   });
   const qc = $("qcur");
   if (qc) q.cur = qc.value;
+  const qv = $("qdv");
+  if (qv) q.dv2 = qv.value;
   const qx = $("qfx");
   if (qx) q.fx = qx.value;
   const w = $("qwh");
@@ -2796,7 +2799,7 @@ function vDvf() {
 <p class="lab">Categoría</p>${catChips("rc")}${subF(q.rc)}
 ${ap ? "" : `<p class="lab">Pagado con</p>`}<select onchange="q.ac=this.value"${ap ? " hidden" : ""}>${AC.map((a) => `<option ${(q.ac || defAc()) == a ? "selected" : ""}>${esc(a)}</option>`).join("")}</select><p class="lab"${ap ? "" : ' style="margin-top:10px"'}>Te lo devuelven en</p><select onchange="q.rac=this.value">${AC.map((a) => `<option ${(q.rac || dAc()) == a ? "selected" : ""}>${esc(a)}</option>`).join("")}</select><div style="height:10px"></div>
 <div class="grid" style="margin-bottom:14px"><div><p class="lab">Fecha</p><input id="qd" type="date" value="${q.d || today()}"></div><div><p class="lab">Nota<span class="hint opt"> (opcional)</span></p><input id="qn" placeholder="${hOn() ? "Opcional" : ""}" value="${esc(q.n)}"></div></div>
-<button class="b" onclick="add()">${q.id ? "Guardar cambios" : "Guardar"}</button>${q.id ? `<button class="chip" style="width:100%;margin-top:8px;color:var(--red);border-color:var(--red)" onclick="delEd()">Borrar este gasto</button>` : ""}</div>`;
+${q.id && q.dv2 ? `<p class="lab">Fecha en que te lo devolvieron</p><input id="qdv" type="date" value="${esc(q.dv2)}" style="margin-bottom:6px"><p class="mut hint" style="font-size:13px;margin:0 0 14px">Es cuando te entra el dinero en la cuenta. Para tu ahorro cuenta en el mes en que lo gastaste.</p>` : ""}<button class="b" onclick="add()">${q.id ? "Guardar cambios" : "Guardar"}</button>${q.id ? `<button class="chip" style="width:100%;margin-top:8px;color:var(--red);border-color:var(--red)" onclick="delEd()">Borrar este gasto</button>` : ""}</div>`;
 }
 function vGas() {
   if (q.dvf && q.k == "g" && q.w == "d") return vDvf();
@@ -2982,7 +2985,7 @@ function add() {
     if (o && o.rid) t.rid = o.rid;
     if (o && o.lkd && t.r) t.lkd = o.lkd;
     if (o && o.dv && t.r) {
-      t.dv = o.dv;
+      t.dv = /^\d{4}-\d\d-\d\d$/.test(q.dv2 || "") ? q.dv2 : o.dv;
       t.dac = o.dbz ? o.dac : t.rac || o.dac;
       if (o.dbz) t.dbz = o.dbz;
     }
@@ -3021,7 +3024,7 @@ function edit(id) {
   if (!t) return;
   if (tab != "gas") pt = tab;
   Object.assign(q, { fxOn: !!t.oc, cur: t.oc || "", fx: t.fx ? String(t.fx) : "" });
-  Object.assign(q, { id, src: t.src || "p", k: t.k, a: String(t.a), d: t.d, n: t.n || "", ac: t.ac || defAc(), w: t.r ? "d" : "p", what: t.what || "", ot: t.ot || "", dvf: !!t.r && !t.oc, rac: t.rac || t.dac || (t.r ? dAc() : "") });
+  Object.assign(q, { dv2: t.r && t.dv ? t.dv : "", id, src: t.src || "p", k: t.k, a: String(t.a), d: t.d, n: t.n || "", ac: t.ac || defAc(), w: t.r ? "d" : "p", what: t.what || "", ot: t.ot || "", dvf: !!t.r && !t.oc, rac: t.rac || t.dac || (t.r ? dAc() : "") });
   if (t.r) q.rc = t.c;
   else if (t.k == "g") q.c = EC.includes(t.c) ? t.c : "Otros";
   if (t.oc) q.a = String(t.oa);
@@ -3856,7 +3859,7 @@ function R0() {
   const n = tab == "res" || tab == "inf" || tab == "biz" ? ["nm", (new Date(mo + "-01T12:00")).toLocaleDateString("es-ES", { month: "long", year: "numeric" })] : tab == "ano" ? ["ny", yr] : tab == "sem" ? ["nw", wl()] : tab == "dia" ? ["nd", (new Date(dday + "T12:00")).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })] : null;
   $("hn").innerHTML = n ? `<button class="x" onclick="${n[0]}(-1)" aria-label="Anterior">${ic("left", 20)}</button><strong style="text-align:center;font-size:15px">${n[1]}</strong><button class="x" onclick="${n[0]}(1)" aria-label="Siguiente">${ic("right", 20)}</button>` : "";
   $("nav").innerHTML = visT().map((k) => [k, k == "inv" ? "Invertir" : tabN(k)]).map(([k, v]) => `<button class="${k == tab || k == "vis" && isV(tab) || k == "biz" && tab == "bzf" ? "on" : ""}" onclick="go('${k}')"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg><span>${v}</span></button>`).join("");
-  $("app").innerHTML = (navigator.onLine ? "" : `<div class="offl">${ic("cloud", 15)} Sin conexión. Lo que apuntes se guarda en el móvil y la copia se hace sola al volver internet.</div>`) + (isV(tab) ? vSeg() : "") + (sbDown && S.sbu && navigator.onLine && tab != "gas" && tab != "bzf" && tab != "bus" ? sbBan() : "") + (tab != "gas" && tab != "bzf" && tab != "bus" && tab != "pre" && !sbDown && bkDue() ? bkBan(bkDue()) : "") + (pq.length && tab != "gas" && !(tab == "bzf" && bpi != null) ? `<div class="apb"><div class="t">${qTit()}</div><div class="s">${esc(qDes(pq[0]))}${pq.length > 1 ? " y " + (pq.length - 1) + " más" : ""}</div><button onclick="openP()">Revisar y apuntar</button></div>` : "") + { sem: vSem, ano: vAno, res: vRes, gas: vGas, bzf: vBzF, bus: vBus, cue: vCue, pre: () => vPre() + `<div class="card" style="text-align:center"><p class="mut" style="font-size:13px;margin:0 0 8px">Versión de la app: <b>2 nov · 13:15</b></p><button class="chip" onclick="updApp()">Buscar actualización</button><p class="mut" style="font-size:12px;margin:8px 0 0">No borra tus datos. Si tienes internet, recarga la app con la última versión.</p></div>` + vCats() + vCont() + vUI() + vExp() + `<div class="endb"><button class="chip" onclick="tourGo()">${ic("play", 17)} Ver tutorial</button><button class="chip" onclick="obOn=true;ob=0;go('res')">${ic("refresh", 17)} Repetir bienvenida</button></div>`, inf: vInf, biz: vBiz, dia: vDia, inv: vInv }[tab]();
+  $("app").innerHTML = (navigator.onLine ? "" : `<div class="offl">${ic("cloud", 15)} Sin conexión. Lo que apuntes se guarda en el móvil y la copia se hace sola al volver internet.</div>`) + (isV(tab) ? vSeg() : "") + (sbDown && S.sbu && navigator.onLine && tab != "gas" && tab != "bzf" && tab != "bus" ? sbBan() : "") + (tab != "gas" && tab != "bzf" && tab != "bus" && tab != "pre" && !sbDown && bkDue() ? bkBan(bkDue()) : "") + (pq.length && tab != "gas" && !(tab == "bzf" && bpi != null) ? `<div class="apb"><div class="t">${qTit()}</div><div class="s">${esc(qDes(pq[0]))}${pq.length > 1 ? " y " + (pq.length - 1) + " más" : ""}</div><button onclick="openP()">Revisar y apuntar</button></div>` : "") + { sem: vSem, ano: vAno, res: vRes, gas: vGas, bzf: vBzF, bus: vBus, cue: vCue, pre: () => vPre() + `<div class="card" style="text-align:center"><p class="mut" style="font-size:13px;margin:0 0 8px">Versión de la app: <b>2 nov · 13:40</b></p><button class="chip" onclick="updApp()">Buscar actualización</button><p class="mut" style="font-size:12px;margin:8px 0 0">No borra tus datos. Si tienes internet, recarga la app con la última versión.</p></div>` + vCats() + vCont() + vUI() + vExp() + `<div class="endb"><button class="chip" onclick="tourGo()">${ic("play", 17)} Ver tutorial</button><button class="chip" onclick="obOn=true;ob=0;go('res')">${ic("refresh", 17)} Repetir bienvenida</button></div>`, inf: vInf, biz: vBiz, dia: vDia, inv: vInv }[tab]();
   $("fab").hidden = tab == "gas" || tab == "bzf" || tab == "cue" || tab == "bus";
   if (tab == "pre") {
     accSet();
@@ -4365,11 +4368,11 @@ R();
 // Tocar un número de un recuadro: explica de forma resumida de dónde sale (se puede quitar en Personalizar la app)
 function xpTxt(lab) {
   const m = tab == "res" || tab == "dia" || tab == "sem" ? tab == "res" ? mo : (tab == "dia" ? dday : today() >= wk && today() <= addD(wk, 6) ? today() : addD(wk, 3)).slice(0, 7) : mo, i = inc(m), g = exp(m), sv = S.meta || 0, bud = rnd(i - sv), left = rnd(bud - g), br = sum(ALL().filter((t) => t.k == "g" && t.d.startsWith(m)), (t) => t.a), dv = rnd(br - g), l = lab.toLowerCase();
-  if (/^gastado en/.test(l) || l == "gastado") return "<b>Gastado</b>: tus gastos " + f0(br) + (dv > 0 ? " − lo que te devolvieron " + f0(dv) : "") + " = " + f0(g) + ". Lo de Devolver cuenta como gastado el mes en que lo pagas; cuando te lo devuelven, suma como dinero que entra el mes en que lo marcas. De lo que te deben por Bizum solo cuenta tu parte.";
+  if (/^gastado en/.test(l) || l == "gastado") return "<b>Gastado</b>: tus gastos " + f0(br) + (dv > 0 ? " − lo que te devolvieron " + f0(dv) : "") + " = " + f0(g) + ". Lo de Devolver cuenta como gastado el mes en que lo pagas; cuando te lo devuelven, suma como ahorro de ese mismo mes, aunque te llegue después. De lo que te deben por Bizum solo cuenta tu parte.";
   if (/^te queda( por gastar| en .*)?$|te has pasado/.test(l)) return "<b>" + lab + "</b>: tu " + W("sueldo", "paga") + " y extras " + f0(i) + (sv ? " − " + f0(sv) + " para ahorrar" : "") + " − gastado " + f0(g) + " = " + f0(left) + ". Se calcula siempre con la " + W("sueldo", "paga") + ", no con lo que haya en tus cuentas.";
-  if (/^por devolver$/.test(l)) return "<b>Por devolver</b>: lo que te tienen que devolver de Devolver, también de meses anteriores: " + f0(pend()) + ". Ya está contado como gastado.";
+  if (/^por devolver$/.test(l)) return "<b>Por devolver</b>: lo que te tienen que devolver de los gastos de este mes: " + f0(pendM(m)) + ". Ya está contado como gastado.";
   if (/puedes gastar/.test(l)) return "<b>Puedes gastar</b>: " + W("sueldo", "paga") + " y extras " + f0(i) + " − " + f0(sv) + " para ahorrar = " + f0(bud) + ".";
-  if (/^realmente/.test(l)) return "<b>Realmente</b>: lo que te queda por gastar " + f0(left) + " + lo que te tienen que devolver " + f0(pend()) + " = " + f0(rnd(left + pend())) + ". Cuando te lo devuelvan, se mueve a Te queda por gastar.";
+  if (/^realmente/.test(l)) return "<b>Realmente</b>: lo que te queda por gastar " + f0(left) + " + lo que te tienen que devolver de este mes " + f0(pendM(m)) + " = " + f0(rnd(left + pendM(m))) + ". Cuando te lo devuelvan, se suma a Te queda.";
   if (/^extras$/.test(l)) return "<b>Extras</b>: dinero extra, Bizum recibidos y devoluciones de este mes (no incluye " + W("el sueldo", "la paga") + ", que ya está sumado en lo que te queda).";
   if (/paga|sueldo/.test(l) && /extras/.test(l)) return "<b>" + lab + "</b>: " + W("sueldo", "paga") + " " + f0(rnd(i - ext(m))) + " + dinero extra y Bizum recibidos " + f0(ext(m)) + " = " + f0(i) + ".";
   if (/^debo$/.test(l)) return "<b>Bizums · Debo</b>: lo que debes por Bizum y todavía no has pagado. Ya cuenta como gasto; al pagarlo solo sale el dinero de la cuenta.";
