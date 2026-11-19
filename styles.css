@@ -2404,3 +2404,21 @@ th,td {
   bottom:0;
   background:repeating-linear-gradient(135deg,rgba(178,61,55,.6) 0 5px,rgba(178,61,55,.28) 5px 10px)
 }
+
+.hero .hvt {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px
+}
+
+.hero .hvt .nv {
+  display:flex;
+  gap:2px;
+  flex:none
+}
+
+.hero .hvt .x {
+  color:var(--hc);
+  padding:6px
+}
