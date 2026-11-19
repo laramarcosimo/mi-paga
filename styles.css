@@ -2240,3 +2240,43 @@ th,td {
   color:#fff;
   flex:none
 }
+
+.hero .hl {
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:10px;
+  padding:6px 0;
+  font-size:16px;
+  font-variant-numeric:tabular-nums
+}
+
+.hero .hl b {
+  font-weight:700;
+  white-space:nowrap
+}
+
+.hero .hl.t {
+  border-top:1px solid rgba(128,128,128,.35);
+  margin-top:6px;
+  padding-top:10px;
+  font-size:19px;
+  font-weight:800;
+  color:var(--hc)
+}
+
+.hero .hl.t b {
+  font-size:30px;
+  font-weight:800;
+  letter-spacing:-.02em
+}
+
+.hero .hl.t2 {
+  font-weight:800;
+  font-size:17px
+}
+
+.hero .hl + .hb,
+.hero .hl.t + .hb {
+  margin-top:12px
+}
