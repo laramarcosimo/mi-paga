@@ -2280,3 +2280,127 @@ th,td {
 .hero .hl.t + .hb {
   margin-top:12px
 }
+
+.hero.hv {
+  --vr:color-mix(in srgb,var(--tx) 72%,var(--card))
+}
+
+.hero.hv .l {
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:10px
+}
+
+.hero .vtiles {
+  gap:10px;
+  margin:0 0 16px
+}
+
+.hero .vt {
+  border-radius:16px;
+  padding:12px 14px;
+  background:var(--card);
+  box-shadow:0 1px 2px rgba(0,0,0,.06)
+}
+
+.hero .vt small {
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  color:var(--mut)
+}
+
+.hero .vt b {
+  display:block;
+  font-size:28px;
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+  margin:2px 0
+}
+
+.hero .vt em {
+  display:block;
+  font-style:normal;
+  font-size:12px;
+  color:var(--mut)
+}
+
+.hero .vt.pos b {
+  color:var(--acc)
+}
+
+.hero .vt.neg b {
+  color:var(--red)
+}
+
+.hero .vbar {
+  position:relative;
+  padding:8px 0
+}
+
+.hero .vbar .vf {
+  position:relative;
+  display:flex;
+  height:22px;
+  border-radius:11px;
+  overflow:hidden;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 22%,var(--card)) var(--mk),color-mix(in srgb,var(--red) 30%,var(--card)) var(--mk))
+}
+
+.hero .vbar .vf i {
+  display:block;
+  height:100%
+}
+
+.hero .vbar u {
+  position:absolute;
+  left:var(--mk);
+  top:2px;
+  bottom:2px;
+  width:3px;
+  margin-left:-1.5px;
+  border-radius:2px;
+  background:var(--tx)
+}
+
+.hero .vleg {
+  margin-top:6px
+}
+
+.hero .vleg .hl {
+  padding:5px 0;
+  font-size:15px
+}
+
+.hero .dt {
+  display:inline-block;
+  width:11px;
+  height:11px;
+  border-radius:4px;
+  margin-right:9px;
+  vertical-align:-1px
+}
+
+.hero .dt.mk {
+  width:3px;
+  height:14px;
+  border-radius:2px;
+  margin:0 12px 0 4px;
+  background:var(--tx);
+  vertical-align:-3px
+}
+
+.hero .vleg .mkl {
+  color:var(--mut)
+}
+
+.hero .vbar .vo {
+  position:absolute;
+  left:var(--mk);
+  right:0;
+  top:0;
+  bottom:0;
+  background:repeating-linear-gradient(135deg,rgba(178,61,55,.6) 0 5px,rgba(178,61,55,.28) 5px 10px)
+}
